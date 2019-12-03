@@ -116,9 +116,14 @@ const ChatApp = props => {
         setCurrentInput(e.target.value);
     }
 
+    // Object.keys(bullets).map((key, id) => (<Chats key={id} chats={bullets[key]}/>))
+
+    let chats = Object.keys(bullets).map((key, id) => (bullets[key]));
+
     return (
         <div>
-            {/*{Object.keys(bullets).map((key, id) => (<Chats key={key} id={id} chats={bullets[key]}/>))}*/}
+          <Chats chats={chats} />
+            
 
             <input
                 placeholder="type something"
@@ -154,7 +159,7 @@ const Chats = props => {
         <div
             key={i}
             ref={el => chatsRef.current[i] = el}
-            style={{fontSize: 40, width: `${(i + 1) * 100}px`}}>
+            style={{fontSize: 14, width: `${(i + 1) * 100}px`}}>
             {chat}
         </div>
     ));
