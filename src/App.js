@@ -17,12 +17,6 @@ import {
 } from 'react-redux-firebase';
 import {useSelector} from "react-redux";
 
-/*
-  1. We should create a series of div's with references to hold each chat
-    1.1 Can we create ref's on the fly without having to declare them?
-
-*/
-
 const fbConfig = {
     apiKey: "AIzaSyCUiCnctpNoQ3AZ6-J7EkXcqP3P6rorEuA",
     authDomain: "hypermedia-667d9.firebaseapp.com",
@@ -40,7 +34,8 @@ const rrfConfig = {
 }
 
 // Initialize firebase instance
-firebase.initializeApp(fbConfig)
+firebase.initializeApp(fbConfig);
+
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
@@ -68,6 +63,35 @@ const ChatWrapper = styled.div`
 
 `
 
+const handleColorType = color => {
+  switch (color) {
+    case "primary":
+      return "#03a9f3";
+    case "danger":
+      return "#f56342";
+    default:
+      return "#fff";
+  }
+};
+
+const handleSize = size => {
+  switch(size) {
+    case "large":
+      return '2em';
+    case "medium":
+      return '1.5em';
+    case "small":
+      return '.7em';
+    default:
+      return '.5em'
+  }
+}
+
+const Chat = styled.p`
+  font-size: ${props => handleSize(props.options.size)};
+  color: ${props => props.options.color};
+`
+
 function App() {
     return (
         <Provider store={store}>
@@ -80,17 +104,22 @@ function App() {
 
 const ChatApp = props => {
     const firebase = useFirebase();
+    let ts = Math.round((new Date()).getTime() / 1000);
 
     //chat listener
     useFirebaseConnect([
-        'bullets',
+      'bullets'
+      //{ type: 'child_added', path: '/bullets' }
     ]);
 
     // The data coming from firebase
     const bullets = useSelector(state => state.firebase.data.bullets)
 
     // Track the input message
-    const [currentInput, setCurrentInput] = useState("");
+    let currentInput = {};
+    const [submittedInput, setSubmittedInput] = useState("");
+    let options = {};
+
 
     // If it hasn't been loaded, we display a loading message
     if (!isLoaded(bullets)) {
@@ -104,33 +133,40 @@ const ChatApp = props => {
             return ;
         }
 
+        currentInput && setSubmittedInput(currentInput);
+        console.log(currentInput);
+
         // Save it to firebase
         firebase.push("bullets", currentInput);
 
         // Clear the input
-        setCurrentInput("");
+        currentInput = '';
     }
 
     // Event handler - We call this method if there is any change happening to the input
     function handleInputChange(e) {
-        setCurrentInput(e.target.value);
+        currentInput = { time: ts, chat: e.target.value, options: options };
     }
 
     // Object.keys(bullets).map((key, id) => (<Chats key={id} chats={bullets[key]}/>))
 
-    let chats = Object.keys(bullets).map((key, id) => (bullets[key]));
+    let chats = Object.keys(bullets).map((key, id) => bullets[key]);
 
     return (
         <div>
-          <Chats chats={chats} />
-            
-
+          <Chats chats={chats}/>
+          {/* <Chats chats={chats} /> */}
             <input
                 placeholder="type something"
                 onChange={handleInputChange}
-                value={currentInput}
+                //value={currentInput}
                 onKeyPress={handleEnterPressed}
             />
+            <button onClick={() => options.size = 'large'}>large</button>
+            <button onClick={() => options.size = 'medium'}>medium</button>
+            <button onClick={() => options.size = 'medium'}>small</button>
+            <button onClick={() => options.color = 'black'}>black</button>
+            <button onClick={() => options.color = 'teal'}>teal</button>
         </div>
     );
 }
@@ -158,9 +194,8 @@ const Chats = props => {
     return props.chats.map((chat, i) => (
         <div
             key={i}
-            ref={el => chatsRef.current[i] = el}
-            style={{fontSize: 14, width: `${(i + 1) * 100}px`}}>
-            {chat}
+            ref={el => chatsRef.current[i] = el} >
+            <Chat options={chat.options}>{chat.chat}</Chat>
         </div>
     ));
 }
