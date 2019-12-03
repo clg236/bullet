@@ -55,12 +55,24 @@ const rrfProps = {
 const AppWrapper = styled.div`
   display: flex;
   flex-direction: column
+  height: 100vh;
   background-color: tomato;
   justify-content: space-between;
+  overflow: hidden;
 `;
 
-const ChatWrapper = styled.div`
-
+const InputWrapper = styled.input`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  padding: 1em;
+  font-size: 2em;
+`
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
 `
 
 const handleColorType = color => {
@@ -96,7 +108,9 @@ function App() {
     return (
         <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
+              <AppWrapper>
                 <ChatApp/>
+              </AppWrapper>
             </ReactReduxFirebaseProvider>
         </Provider>
     )
@@ -108,8 +122,7 @@ const ChatApp = props => {
 
     //chat listener
     useFirebaseConnect([
-      'bullets'
-      //{ type: 'child_added', path: '/bullets' }
+      {type: 'child_added', path: '/bullets'}
     ]);
 
     // The data coming from firebase
@@ -118,7 +131,11 @@ const ChatApp = props => {
     // Track the input message
     let currentInput = {};
     const [submittedInput, setSubmittedInput] = useState("");
-    let options = {};
+    let options = {
+      size: 'medium',
+      color: 'black',
+      speed: 'medium'
+    };
 
 
     // If it hasn't been loaded, we display a loading message
@@ -153,21 +170,26 @@ const ChatApp = props => {
     let chats = Object.keys(bullets).map((key, id) => bullets[key]);
 
     return (
-        <div>
+      <div>
+        <div style={{display: 'flex', flexDirection: 'row', flex: 1 }}>
           <Chats chats={chats}/>
           {/* <Chats chats={chats} /> */}
-            <input
+
+          <InputWrapper
                 placeholder="type something"
                 onChange={handleInputChange}
                 //value={currentInput}
                 onKeyPress={handleEnterPressed}
             />
-            <button onClick={() => options.size = 'large'}>large</button>
-            <button onClick={() => options.size = 'medium'}>medium</button>
-            <button onClick={() => options.size = 'medium'}>small</button>
-            <button onClick={() => options.color = 'black'}>black</button>
-            <button onClick={() => options.color = 'teal'}>teal</button>
+
         </div>
+              <ButtonWrapper>
+              <button onClick={() => options.size = 'large'}>large</button>
+              <button onClick={() => options.size = 'medium'}>medium</button>
+              <button onClick={() => options.size = 'medium'}>small</button>
+              <button onClick={() => options.color = 'black'}>black</button>
+              <button onClick={() => options.color = 'teal'}>teal</button>
+        </ButtonWrapper></div>
     );
 }
 
@@ -183,9 +205,9 @@ const Chats = props => {
             return (
                 TweenMax.fromTo(
                     [chatsRef.current[i]],
-                    0.5,
+                    30,
                     {x: '100vw'},
-                    {x: 0, repeat: 0,}
+                    {x: '-50vw', repeat: 0,}
                 )
             );
         })
