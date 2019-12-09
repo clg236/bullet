@@ -99,9 +99,29 @@ const handleSize = size => {
   }
 }
 
+const handleSpeed = speed => {
+  switch(speed) {
+    case "fast":
+      return 5
+    case "medium":
+      return 20
+    case "slow":
+      return 30
+    default:
+      return 10
+  }
+}
+
+
+const ChatWrapper = styled.div`
+  background-color: red;
+  z-Index: ${props => (1 * props.index)};
+`;
+
 const Chat = styled.p`
   font-size: ${props => handleSize(props.options.size)};
   color: ${props => props.options.color};
+  
 `
 
 function App() {
@@ -174,7 +194,7 @@ const ChatApp = props => {
 
     return (
       <div>
-        <div style={{display: 'flex', flexDirection: 'row', flex: 1 }}>
+        <div style={{display: 'flex', flexDirection: 'row', flex: 0 }}>
           <Chats chats={chats} />
           {/* <Chats chats={chats} /> */}
 
@@ -186,35 +206,35 @@ const ChatApp = props => {
             />
 
         </div>
-              <ButtonWrapper>
+          <ButtonWrapper>
               <button onClick={() => options.size = 'large'}>large</button>
               <button onClick={() => options.size = 'medium'}>medium</button>
               <button onClick={() => options.size = 'medium'}>small</button>
               <button onClick={() => options.color = 'black'}>black</button>
               <button onClick={() => options.color = 'teal'}>teal</button>
-        </ButtonWrapper></div>
+              <button onClick={() => options.speed = 'fast'}>fast</button>
+              <button onClick={() => options.speed = 'medium'}>medium</button>
+              <button onClick={() => options.speed = 'slow'}>slow</button>
+          </ButtonWrapper></div>
     );
 }
 
 const Chats = props => {
-  console.log(props.chats, props.chats.length);
+  //console.log(props.chats.length);
     return props.chats.map((chat, i) => (
-      <MyChat chat={chat} key={chat.id} />
+        <MyChat chat={chat} key={chat.id} index={i} />
+
     ));
 }
 
-
 const MyChat = props => {
-
+  //console.log(props.chat);
   let ref = useRef(null);
 
-  // we can access the elements with chatsRef.current[n]
-
   useEffect(() => {
-    console.log('tween');
     TweenMax.fromTo(
         [ref.current],
-        30,
+        handleSpeed(props.chat.options.speed),
         {x: '100vw'},
         {x: '-50vw', repeat: 0,}
     );
@@ -223,7 +243,9 @@ const MyChat = props => {
   return (
       <div
           ref={ref} >
-          <Chat options={props.chat.options}>{props.chat.chat}</Chat>
+            <ChatWrapper index={props.index}>
+              <Chat options={props.chat.options} >{props.chat.chat}</Chat>
+            </ChatWrapper>
       </div>
   );
 }
