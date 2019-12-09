@@ -116,6 +116,7 @@ function App() {
     )
 }
 
+
 const ChatApp = props => {
     const firebase = useFirebase();
     let ts = Math.round((new Date()).getTime() / 1000);
@@ -139,9 +140,9 @@ const ChatApp = props => {
 
 
     // If it hasn't been loaded, we display a loading message
-    if (!isLoaded(bullets)) {
-        return <p>Loading...</p>
-    }
+    // if (!isLoaded(bullets)) {
+    //     return <p>Loading...</p>
+    // }
 
     // Event handler - We call this method after hitting "Enter" to save the data into firebase
     function handleEnterPressed(e) {
@@ -167,12 +168,14 @@ const ChatApp = props => {
 
     // Object.keys(bullets).map((key, id) => (<Chats key={id} chats={bullets[key]}/>))
 
-    let chats = Object.keys(bullets).map((key, id) => bullets[key]);
+    let chats = bullets ? Object.keys(bullets).map(key => {
+      return {...bullets[key], id: key};
+    }) : [];
 
     return (
       <div>
         <div style={{display: 'flex', flexDirection: 'row', flex: 1 }}>
-          <Chats chats={chats}/>
+          <Chats chats={chats} />
           {/* <Chats chats={chats} /> */}
 
           <InputWrapper
@@ -194,32 +197,35 @@ const ChatApp = props => {
 }
 
 const Chats = props => {
-
-    const chatsRef = useRef([]);
-
-    // we can access the elements with chatsRef.current[n]
-
-    useEffect(() => {
-        chatsRef.current = chatsRef.current.slice(0, props.chats.length);
-        props.chats.map((chat, i) => {
-            return (
-                TweenMax.fromTo(
-                    [chatsRef.current[i]],
-                    30,
-                    {x: '100vw'},
-                    {x: '-50vw', repeat: 0,}
-                )
-            );
-        })
-    }, [props.chats]);
-
+  console.log(props.chats, props.chats.length);
     return props.chats.map((chat, i) => (
-        <div
-            key={i}
-            ref={el => chatsRef.current[i] = el} >
-            <Chat options={chat.options}>{chat.chat}</Chat>
-        </div>
+      <MyChat chat={chat} key={chat.id} />
     ));
+}
+
+
+const MyChat = props => {
+
+  let ref = useRef(null);
+
+  // we can access the elements with chatsRef.current[n]
+
+  useEffect(() => {
+    console.log('tween');
+    TweenMax.fromTo(
+        [ref.current],
+        30,
+        {x: '100vw'},
+        {x: '-50vw', repeat: 0,}
+    );
+  }, [ref]);
+
+  return (
+      <div
+          ref={ref} >
+          <Chat options={props.chat.options}>{props.chat.chat}</Chat>
+      </div>
+  );
 }
 
 export default App;
