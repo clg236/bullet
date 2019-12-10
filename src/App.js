@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
 import styled from 'styled-components';
-
 import {Provider, useSelector} from 'react-redux';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -11,6 +10,7 @@ import {firebaseReducer, isLoaded, ReactReduxFirebaseProvider, useFirebaseConnec
 import YoutubePlayer from 'react-youtube-player';
 import randomColor from 'randomcolor';
 import AwesomeDanmaku from 'awesome-danmaku';
+import {TweenLite, TweenMax} from 'gsap';
 
 const fbConfig = {
     apiKey: "AIzaSyCUiCnctpNoQ3AZ6-J7EkXcqP3P6rorEuA",
@@ -90,12 +90,13 @@ function App() {
 
 let shownDanMu = {};
 
+
 const ChatApp = props => {
     return (
         <div style={{"height": "100%"}}>
             <div style={{display: 'flex', height: "calc(100% - 106px)"}}>
                 <DanMu />
-                <YoutubePlayer autoplay={true} videoId={'sCNrK-n68CM'}/>
+                <YoutubePlayer autoplay={true} videoId={'XCyi4w-3wZQ'}/>
             </div>
 
             <Input/>
@@ -110,19 +111,31 @@ const DanMu = props => {
 
     // The data coming from firebase
     const bullets = useSelector(state => state.firebase.data.bullets)
-
     const danMuPlayerRef = useRef(null);
+    let tweenRef = useRef(null);
     const [danMuPlayer, setDanMuPlayer] = useState(null);
 
-    useEffect(() => {
+    const sendGifs = () => {
       
+    }
+    
+
+    useEffect(() => {
         setDanMuPlayer(AwesomeDanmaku.getPlayer({
             el: danMuPlayerRef.current,
             maxCount: 50,
             trackCount: 5
         }));
-    }, [danMuPlayerRef]);
 
+        TweenMax.fromTo(
+          tweenRef.current,
+          10,
+          {x: '100vw'},
+          {x: '-999', repeat: 0,}
+        )
+
+        
+    }, [danMuPlayerRef]);
 
     if (danMuPlayer) {
         danMuPlayer.play();
@@ -135,7 +148,7 @@ const DanMu = props => {
                 danMuPlayer.insert({
                     value: bullets[k],
                     opacity: .9,
-                    color: randomColor({luminosity: 'bright', hue: 'pink'}),
+                    color: randomColor({luminosity: 'bright'}),
                 }, true);
 
                 shownDanMu[k] = true;
@@ -144,14 +157,17 @@ const DanMu = props => {
     }
 
     return (
+      <div>
         <div ref={danMuPlayerRef}
-    style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}}/>
+          style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}} />
+          <div style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}} ref={tweenRef}><img src="https://media.giphy.com/media/6XjF2YYHFTkWI/giphy.gif" /></div>
+      </div>
+
     );
 }
 
 const Input = props => {
     const [value, setValue] = useState("");
-
     function handleInputChange(e) {
         setValue(e.target.value);
     }
@@ -165,17 +181,19 @@ const Input = props => {
 
         // Save it to firebase
         firebase.push("bullets", value);
-
         setValue("");
     }
 
     return (
+      <div>
         <InputWrapper
             placeholder="type something"
             onChange={handleInputChange}
             value={value}
             onKeyPress={handleEnterPressed}
         />
+      </div>
+
     );
 }
 
