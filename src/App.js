@@ -49,20 +49,32 @@ const rrfProps = {
 }
 
 const AppWrapper = styled.div`
+
   display: flex;
   flex-direction: column
   height: 100vh;
-  background-color: tomato;
+  //background-color: transparent;
   justify-content: space-between;
   overflow: hidden;
 `;
 
 const InputWrapper = styled.input`
+  font-family: 'Roboto', sans-serif;
   position: fixed;
   bottom: 0;
   width: 100%;
   padding: 1em;
   font-size: 2em;
+  color: #6FFFB0;
+  background-color: black;
+  border-width: 0px;
+  border:none;
+  :focus {
+    outline: none;
+  }
+  ::placeholder {
+      color: #FD6FFF;
+  }
 `
 
 function App() {
@@ -84,7 +96,7 @@ const ChatApp = props => {
         <div style={{"height": "100%"}}>
             <div style={{display: 'flex', height: "calc(100% - 106px)"}}>
                 <DanMu/>
-                <YoutubePlayer videoId={'x7qPAY9JqE4'}/>
+                <YoutubePlayer autoplay={true} videoId={'sCNrK-n68CM'}/>
             </div>
 
             <Input/>
