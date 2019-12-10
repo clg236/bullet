@@ -12,7 +12,6 @@ import YoutubePlayer from 'react-youtube-player';
 import randomColor from 'randomcolor';
 import AwesomeDanmaku from 'awesome-danmaku';
 
-
 const fbConfig = {
     apiKey: "AIzaSyCUiCnctpNoQ3AZ6-J7EkXcqP3P6rorEuA",
     authDomain: "hypermedia-667d9.firebaseapp.com",
@@ -95,7 +94,7 @@ const ChatApp = props => {
     return (
         <div style={{"height": "100%"}}>
             <div style={{display: 'flex', height: "calc(100% - 106px)"}}>
-                <DanMu/>
+                <DanMu />
                 <YoutubePlayer autoplay={true} videoId={'sCNrK-n68CM'}/>
             </div>
 
@@ -116,6 +115,7 @@ const DanMu = props => {
     const [danMuPlayer, setDanMuPlayer] = useState(null);
 
     useEffect(() => {
+      
         setDanMuPlayer(AwesomeDanmaku.getPlayer({
             el: danMuPlayerRef.current,
             maxCount: 50,
@@ -132,11 +132,10 @@ const DanMu = props => {
                 if (k in shownDanMu) {
                     return;
                 }
-
                 danMuPlayer.insert({
                     value: bullets[k],
-                    opacity: 0.8,
-                    color: randomColor({luminosity: 'light'}),
+                    opacity: .9,
+                    color: randomColor({luminosity: 'bright', hue: 'pink'}),
                 }, true);
 
                 shownDanMu[k] = true;
