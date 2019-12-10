@@ -1,21 +1,17 @@
-import React, {useState, useEffect, useRef, createRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
-import {TweenLite, TweenMax} from 'gsap';
 import styled from 'styled-components';
 
-import {Provider} from 'react-redux';
+import {Provider, useSelector} from 'react-redux';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/database';
 import {combineReducers, createStore} from 'redux';
-import {
-    firebaseReducer,
-    useFirebaseConnect,
-    ReactReduxFirebaseProvider,
-    isLoaded,
-    useFirebase
-} from 'react-redux-firebase';
-import {useSelector} from "react-redux";
+import {firebaseReducer, isLoaded, ReactReduxFirebaseProvider, useFirebaseConnect} from 'react-redux-firebase';
+import YoutubePlayer from 'react-youtube-player';
+import randomColor from 'randomcolor';
+import AwesomeDanmaku from 'awesome-danmaku';
+
 
 const fbConfig = {
     apiKey: "AIzaSyCUiCnctpNoQ3AZ6-J7EkXcqP3P6rorEuA",
@@ -68,186 +64,108 @@ const InputWrapper = styled.input`
   padding: 1em;
   font-size: 2em;
 `
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: flex-end;
-`
-
-const handleColorType = color => {
-  switch (color) {
-    case "primary":
-      return "#03a9f3";
-    case "danger":
-      return "#f56342";
-    default:
-      return "#fff";
-  }
-};
-
-const handleSize = size => {
-  switch(size) {
-    case "large":
-      return '2em';
-    case "medium":
-      return '1.5em';
-    case "small":
-      return '.7em';
-    default:
-      return '.5em'
-  }
-}
-
-const handleSpeed = speed => {
-  switch(speed) {
-    case "fast":
-      return 5
-    case "medium":
-      return 20
-    case "slow":
-      return 30
-    default:
-      return 10
-  }
-}
-
-
-const ChatWrapper = styled.div`
-  background-color: red;
-  z-Index: ${props => (1 * props.index)};
-`;
-
-const Chat = styled.p`
-  font-size: ${props => handleSize(props.options.size)};
-  color: ${props => props.options.color};
-  
-`
 
 function App() {
     return (
         <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
-              <AppWrapper>
-                <ChatApp/>
-              </AppWrapper>
+                <AppWrapper>
+                    <ChatApp/>
+                </AppWrapper>
             </ReactReduxFirebaseProvider>
         </Provider>
     )
 }
 
+let shownDanMu = {};
 
 const ChatApp = props => {
-    const firebase = useFirebase();
-    let ts = Math.round((new Date()).getTime() / 1000);
+    return (
+        <div style={{"height": "100%"}}>
+            <div style={{display: 'flex', height: "calc(100% - 106px)"}}>
+                <DanMu/>
+                <YoutubePlayer videoId={'x7qPAY9JqE4'}/>
+            </div>
 
-    //chat listener
+            <Input/>
+        </div>
+    );
+}
+
+const DanMu = props => {
     useFirebaseConnect([
-      {type: 'child_added', path: '/bullets'}
+        {type: 'child_added', path: '/bullets'}
     ]);
 
     // The data coming from firebase
     const bullets = useSelector(state => state.firebase.data.bullets)
 
-    // Track the input message
-    let currentInput = {};
-    const [submittedInput, setSubmittedInput] = useState("");
-    let options = {
-      size: 'medium',
-      color: 'black',
-      speed: 'medium'
-    };
+    const danMuPlayerRef = useRef(null);
+    const [danMuPlayer, setDanMuPlayer] = useState(null);
+
+    useEffect(() => {
+        setDanMuPlayer(AwesomeDanmaku.getPlayer({
+            el: danMuPlayerRef.current,
+            maxCount: 50,
+            trackCount: 5
+        }));
+    }, [danMuPlayerRef]);
 
 
-    // If it hasn't been loaded, we display a loading message
-    // if (!isLoaded(bullets)) {
-    //     return <p>Loading...</p>
-    // }
+    if (danMuPlayer) {
+        danMuPlayer.play();
+
+        if (isLoaded(bullets) && bullets && Object.keys(bullets).length > 0) {
+            Object.keys(bullets).forEach(k => {
+                if (k in shownDanMu) {
+                    return;
+                }
+
+                danMuPlayer.insert({
+                    value: bullets[k],
+                    opacity: 0.8,
+                    color: randomColor({luminosity: 'light'}),
+                }, true);
+
+                shownDanMu[k] = true;
+            });
+        }
+    }
+
+    return (
+        <div ref={danMuPlayerRef}
+    style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}}/>
+    );
+}
+
+const Input = props => {
+    const [value, setValue] = useState("");
+
+    function handleInputChange(e) {
+        setValue(e.target.value);
+    }
 
     // Event handler - We call this method after hitting "Enter" to save the data into firebase
     function handleEnterPressed(e) {
         // Key Code: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/keyCode
         if ((e.keyCode ? e.keyCode : e.which) !== 13) {
-            return ;
+            return;
         }
 
-        currentInput && setSubmittedInput(currentInput);
-        console.log(currentInput);
-
         // Save it to firebase
-        firebase.push("bullets", currentInput);
+        firebase.push("bullets", value);
 
-        // Clear the input
-        currentInput = '';
+        setValue("");
     }
-
-    // Event handler - We call this method if there is any change happening to the input
-    function handleInputChange(e) {
-        currentInput = { time: ts, chat: e.target.value, options: options };
-    }
-
-    // Object.keys(bullets).map((key, id) => (<Chats key={id} chats={bullets[key]}/>))
-
-    let chats = bullets ? Object.keys(bullets).map(key => {
-      return {...bullets[key], id: key};
-    }) : [];
 
     return (
-      <div>
-        <div style={{display: 'flex', flexDirection: 'row', flex: 0 }}>
-          <Chats chats={chats} />
-          {/* <Chats chats={chats} /> */}
-
-          <InputWrapper
-                placeholder="type something"
-                onChange={handleInputChange}
-                //value={currentInput}
-                onKeyPress={handleEnterPressed}
-            />
-
-        </div>
-          <ButtonWrapper>
-              <button onClick={() => options.size = 'large'}>large</button>
-              <button onClick={() => options.size = 'medium'}>medium</button>
-              <button onClick={() => options.size = 'medium'}>small</button>
-              <button onClick={() => options.color = 'black'}>black</button>
-              <button onClick={() => options.color = 'teal'}>teal</button>
-              <button onClick={() => options.speed = 'fast'}>fast</button>
-              <button onClick={() => options.speed = 'medium'}>medium</button>
-              <button onClick={() => options.speed = 'slow'}>slow</button>
-          </ButtonWrapper></div>
+        <InputWrapper
+            placeholder="type something"
+            onChange={handleInputChange}
+            value={value}
+            onKeyPress={handleEnterPressed}
+        />
     );
-}
-
-const Chats = props => {
-  //console.log(props.chats.length);
-    return props.chats.map((chat, i) => (
-        <MyChat chat={chat} key={chat.id} index={i} />
-
-    ));
-}
-
-const MyChat = props => {
-  //console.log(props.chat);
-  let ref = useRef(null);
-
-  useEffect(() => {
-    TweenMax.fromTo(
-        [ref.current],
-        handleSpeed(props.chat.options.speed),
-        {x: '100vw'},
-        {x: '-50vw', repeat: 0,}
-    );
-  }, [ref]);
-
-  return (
-      <div
-          ref={ref} >
-            <ChatWrapper index={props.index}>
-              <Chat options={props.chat.options} >{props.chat.chat}</Chat>
-            </ChatWrapper>
-      </div>
-  );
 }
 
 export default App;
