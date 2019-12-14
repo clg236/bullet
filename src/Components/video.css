@@ -1,0 +1,81 @@
+.custom.vjs-tech {
+
+}
+
+.custom .vjs-control-bar { 
+    background: transparent; 
+    color: #FFF;
+    
+    padding: 5px;
+    box-sizing: content-box;
+    position: absolute;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition-duration: 0s!important;
+}
+
+.custom .vjs-control.vjs-button {
+    color: white;
+    outline:none; 
+    text-decoration:none;
+    text-shadow: none;
+    border-width: thin;
+    
+}
+
+.custom .vjs-volume-bar {
+    margin-top: 1.9em;
+}
+
+.custom .vjs-volume-panel {
+    width: 3em;
+}
+
+.video-js .vjs-progress-control {
+    font-size: 2em;
+
+}
+
+.video-js .vjs-play-progress .vjs-slider-bar {
+    background-color: #6FFFB0;
+}
+
+.custom .vjs-volume-level {
+    background: #6FFFB0;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    padding-left: -.5em;
+    text-align: center;
+    overflow: hidden;
+}
+
+.custom .vjs-fullscreen-control {
+    cursor: pointer;
+    position: relative;
+    right: 0;
+}
+
+.custom .vjs-slider-bar {
+    color: transparent 
+}
+
+.custom .vjs-fade-in .vjs-fade-out {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transition-duration: 0s!important;
+}
+
+.custom .vjs-control-bar>.vjs-control:not(:last-child) {
+    border-right-color: #2e2e2e;
+}
+
+.custom .vjs-slider-bar {
+    background-color: #6FFFB0;
+}
+
+.custom.video-js {
+    color: #6FFFB0;
+    font-size: 20px;
+    text-shadow: none;
+    
+  }
