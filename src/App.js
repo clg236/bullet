@@ -11,6 +11,7 @@ import YoutubePlayer from 'react-youtube-player';
 import randomColor from 'randomcolor';
 import AwesomeDanmaku from 'awesome-danmaku';
 import {TweenLite, TweenMax} from 'gsap';
+import qr from './qr.png';
 
 const fbConfig = {
     apiKey: "AIzaSyCUiCnctpNoQ3AZ6-J7EkXcqP3P6rorEuA",
@@ -74,7 +75,9 @@ const InputWrapper = styled.input`
   ::placeholder {
       color: #FD6FFF;
   }
-`
+`;
+
+
 
 function App() {
     return (
@@ -90,15 +93,19 @@ function App() {
 
 let shownDanMu = {};
 
+const opts = {
+    playerVars: { // https://developers.google.com/youtube/player_parameters
+      autoplay: 1
+    }
+  };
 
 const ChatApp = props => {
     return (
         <div style={{"height": "100%"}}>
             <div style={{display: 'flex', height: "calc(100% - 106px)"}}>
                 <DanMu />
-                <YoutubePlayer autoplay={true} videoId={'XCyi4w-3wZQ'}/>
+                <YoutubePlayer opts={opts} videoId={'sCNrK-n68CM'}/>
             </div>
-
             <Input/>
         </div>
     );
@@ -127,12 +134,12 @@ const DanMu = props => {
             trackCount: 5
         }));
 
-        TweenMax.fromTo(
-          tweenRef.current,
-          10,
-          {x: '100vw'},
-          {x: '-999', repeat: 0,}
-        )
+        // TweenMax.fromTo(
+        //   tweenRef.current,
+        //   10,
+        //   {x: '100vw'},
+        //   {x: '-999', repeat: 0,}
+        // )
 
         
     }, [danMuPlayerRef]);
@@ -148,7 +155,12 @@ const DanMu = props => {
                 danMuPlayer.insert({
                     value: bullets[k],
                     opacity: .9,
-                    color: randomColor({luminosity: 'bright'}),
+                    color: randomColor({luminosity: 'bright', hue: 'hotpink'}),
+                    fontSize: '2em',
+                    fontFamily: 'Roboto',
+                    fontWeight: 'bold',
+                    speed: .5,
+                    tracks: 10,
                 }, true);
 
                 shownDanMu[k] = true;
@@ -158,9 +170,12 @@ const DanMu = props => {
 
     return (
       <div>
-        <div ref={danMuPlayerRef}
+        <div style={{ fontSize: 50 }} ref={danMuPlayerRef}
           style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}} />
-          <div style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}} ref={tweenRef}><img src="https://media.giphy.com/media/6XjF2YYHFTkWI/giphy.gif" /></div>
+          {/* <div style={{position: 'absolute', bottom: 100, right: 0}}>
+            <img src={qr} />
+          </div> */}
+          {/* <div style={{zIndex: 9999, width: "100%", position: "absolute", height: "calc(100% - 106px)"}} ref={tweenRef}><img src="https://media.giphy.com/media/6XjF2YYHFTkWI/giphy.gif" /></div> */}
       </div>
 
     );
@@ -192,6 +207,10 @@ const Input = props => {
             value={value}
             onKeyPress={handleEnterPressed}
         />
+        <div className="qr">
+            <h1>Scan and send us a message!</h1>
+            <img src={qr} / >
+        </div>
       </div>
 
     );
