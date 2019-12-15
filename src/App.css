@@ -1,6 +1,7 @@
 
 .awesome-danmaku-item {
   font-size: 50px;
+  text-shadow: 2px 2px #ff0000;
 }
 
   @media screen and (min-width: 1000px) {

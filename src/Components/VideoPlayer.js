@@ -10,9 +10,9 @@ const VideoWrapper = styled.div`
     align-items: stretch;
 `;
 
-const testStream = 'https://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8'
+const testStream = 'http://qthttp.apple.com.edgesuite.net/1010qwoeiuryfg/sl.m3u8'
 const secureTestStream = 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
-const liveStream = 'https://live.patch.to/stream/live.m3u8';
+const liveStream = 'https://live.patch.to/live/itp.m3u8';
 
 const videoJsOptions = {
     autoplay: true,
@@ -48,7 +48,7 @@ const videoJsOptions = {
         type: 'application/x-mpegURL',
       },
     ],
-    poster: 'https://img.youtube.com/vi/aqz-KE-bpKQ/maxresdefault.jpg',
+    poster: '',
     plugins: {
   
     }

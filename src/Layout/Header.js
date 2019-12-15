@@ -26,7 +26,7 @@ export default function Header() {
     <div className={classes.root}>
       <AppBar position="static" style={{ background: 'black'}}>
         <Toolbar>
-          <Typography variant="h2" className={classes.title} color="primary">
+          <Typography variant="h6" className={classes.title} color="primary">
             p.
           </Typography>
           <IconButton edge="start" className={classes.menuButton} color="primary" aria-label="menu">
