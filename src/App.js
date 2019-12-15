@@ -109,11 +109,16 @@ const DanMu = props => {
     let tweenRef = useRef(null);
     const [danMuPlayer, setDanMuPlayer] = useState(null);
 
+    function randomIntFromInterval(min, max) { // min and max included 
+        return Math.floor(Math.random() * (max - min + 1) + min);
+      }
+
     useEffect(() => {
         setDanMuPlayer(AwesomeDanmaku.getPlayer({
             el: danMuPlayerRef.current,
-            maxCount: 50,
-            trackCount: 5
+            nodeMaxCount: 50,
+            trackCount: 10,
+            rollingTime: 15000
         }));
 
         // TweenMax.fromTo(
@@ -127,6 +132,7 @@ const DanMu = props => {
     }, [danMuPlayerRef]);
 
     if (danMuPlayer) {
+  
         danMuPlayer.play();
 
         if (isLoaded(bullets) && bullets && Object.keys(bullets).length > 0) {
@@ -138,11 +144,10 @@ const DanMu = props => {
                     value: bullets[k],
                     opacity: .9,
                     color: randomColor({ luminosity: 'bright', hue: 'hotpink' }),
-                    fontSize: '2em',
+                    fontSize: '30',
                     fontFamily: 'Roboto',
                     fontWeight: 'bold',
-                    speed: 1,
-                    tracks: 5,
+                    speed: randomIntFromInterval(1,10)
                 }, true);
 
                 shownDanMu[k] = true;

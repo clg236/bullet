@@ -27,7 +27,7 @@ export default function Header() {
       <AppBar position="static" style={{ background: 'black'}}>
         <Toolbar>
           <Typography variant="h2" className={classes.title} color="primary">
-            📹
+            p.
           </Typography>
           <IconButton edge="start" className={classes.menuButton} color="primary" aria-label="menu">
             <MenuIcon />
