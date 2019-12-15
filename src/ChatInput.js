@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { SketchPicker } from 'react-color';
 
 const InputWrapper = styled.div`
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
 `;
 
 const Input = styled.input`
-    position: absolute;
+    position: relative;
     bottom: 0;
     padding: 1em;
     border:none;
@@ -20,7 +20,7 @@ const Input = styled.input`
 `;
 
 const SubmitButton = styled.button`
-    position: absolute;
+    position: relative;
     padding: 1em;
     right: 1.2em;
     bottom: 1.2em;

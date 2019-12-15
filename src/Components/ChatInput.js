@@ -14,6 +14,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
+    border-radius: 5px;
     font-size: 1.5em;
     width: 90vw;
     font-family: 'Roboto', sans-serif;
@@ -31,11 +32,10 @@ const Input = styled.input`
 `;
 
 const SendButton = styled.div`
-    position: fixed;
+    position: absolute;
+    padding: 5px;
+    right: 1vw;
     bottom: 0;
-    padding: 10px;
-    right: -5vw;
-    transform: translate(-50%);
 `;
 
 

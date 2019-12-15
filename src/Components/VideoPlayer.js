@@ -21,7 +21,7 @@ const videoJsOptions = {
     smoothQualityChange: true,
     liveui: true,
     aspectRatio: '16:9',
-    fluidui: true,
+    fluidui: false,
     controlBar: {
       children: [
         {
@@ -32,7 +32,7 @@ const videoJsOptions = {
           
         },
         {
-            name: 'progressControl',
+          name: 'progressControl',
         },
         {
           name: 'fullscreenToggle'
